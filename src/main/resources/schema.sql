@@ -7,17 +7,18 @@ DROP TABLE IF EXISTS CITY;
 --);
 
 
-CREATE TABLE TradeData (
+CREATE TABLE Trade_Data (
 id INTEGER AUTO_INCREMENT  PRIMARY KEY,
-first_name VARCHAR(50) NOT NULL,
-last_Name VARCHAR(50) NOT NULL,
-nationality VARCHAR(2) NOT NULL,
-country_of_Residence VARCHAR(2) NOT NULL,
-date_of_birth VARCHAR(20) NOT NULL,
-unique_Trader_id VARCHAR(10) NOT NULL,
-amount DOUBLE NOT NULL,
-currency VARCHAR(3) NOT NULL,
-unique_Stock_ID VARCHAR(10) NOT NULL,
-buy_or_Sell VARCHAR(3) NOT NULL,
-trade_time TIMESTAMP
+First_name VARCHAR(100) NOT NULL,
+Last_Name VARCHAR(100) NOT NULL,
+Nationality VARCHAR(100) NOT NULL,
+Country_of_Residence VARCHAR(100) NOT NULL,
+date_of_birth VARCHAR(100) NOT NULL,
+Unique_Trader_id VARCHAR(100) NOT NULL,
+Amount VARCHAR(100) NOT NULL,
+currency VARCHAR(100) NOT NULL,
+unique_Stock_ID VARCHAR(100) NOT NULL,
+Buy_or_Sell VARCHAR(100) NOT NULL,
+trade_time TIMESTAMP,
+Fraud_Flag VARCHAR(10)
 );

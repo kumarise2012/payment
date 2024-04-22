@@ -7,14 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.sms.entity.TradeData;
+import com.example.sms.jms.Consumer;
+import com.example.sms.jms.Producer;
 import com.example.sms.jms.Trader;
 import com.example.sms.repository.TradeRepository;
 import com.example.sms.service.TraderService;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import jakarta.jms.Queue;
+import org.apache.tomcat.util.json.JSONParser;
+import org.h2.util.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.util.ResourceUtils;
@@ -25,13 +32,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class TradeController
 {
-    //autowired the StudentService class
+
     @Autowired
     TraderService traderService;
 
     @Autowired
     TradeRepository tradeRepository;
-    //creating a get mapping that retrieves all the students detail from the database
 
 
     @Autowired
@@ -39,6 +45,9 @@ public class TradeController
 
     @Autowired
     private Queue queue;
+
+    @Autowired
+    private Producer producer;
 
     @RequestMapping("/")
     public String home(){
@@ -51,19 +60,19 @@ public class TradeController
     {
         return traderService.getAllTrade();
     }
-    //creating a get mapping that retrieves the detail of a specific student
+
     @GetMapping("/trader/{traderId}")
     private TradeData getStudent(@PathVariable("traderId") int id)
     {
         return traderService.getTradeById(id);
     }
-    //creating a delete mapping that deletes a specific student
+
     @DeleteMapping("/trader/{id}")
     private void deleteStudent(@PathVariable("id") int id)
     {
         traderService.delete(id);
     }
-    //creating post mapping that post the student detail in the database
+
     @PostMapping("/trader")
     private void saveTrader(@RequestBody TradeData tradeData)
     {
@@ -75,32 +84,20 @@ public class TradeController
     // Call REST Web Services of Regulatory authories of two countries
 
     @PostMapping("/regulatoryAuthorities/country/india")
-    private void regulatoryAuthoritiesIndia(@RequestBody Trader trader)
+    private void regulatoryAuthoritiesIndia(@RequestBody List<Trader> trader)
     {
-        sendMessage(trader);
+        producer.sendMQMessage(trader);
         System.out.println("Trade Data"+ trader.toString());
 
     }
     @PostMapping("/regulatoryAuthorities/country/japan")
-    private void regulatoryAuthoritiesJapan(@RequestBody Trader trader)
+    private void regulatoryAuthoritiesJapan(@RequestBody List<Trader> trader)
     {
-        sendMessage(trader);
+        producer.sendMQMessage(trader);
         System.out.println("Trade Data"+ trader.toString());
 
     }
 
-    public Trader sendMessage(@RequestBody Trader trader) {
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String studentAsJson = mapper.writeValueAsString(trader);
-
-            jmsTemplate.convertAndSend(queue, studentAsJson);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return trader;
-    }
 
 
 

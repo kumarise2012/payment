@@ -1,9 +1,16 @@
 package com.example.sms.jms;
 
-import java.io.Serializable;
+import com.example.sms.entity.TradeData;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import java.io.Serializable;
+import java.util.List;
+
+@JsonDeserialize
 public class Trader implements Serializable {
     private static final long serialVersionUID = 1L;
+
+   // private List<TradeData> frautTradeDataList;
     private String traderId;
     private String stockId;
     private String buyOrSell;
@@ -31,4 +38,12 @@ public class Trader implements Serializable {
     public void setBuyOrSell(String buyOrSell) {
         this.buyOrSell = buyOrSell;
     }
+
+//    public List<TradeData> getFrautTradeDataList() {
+//        return frautTradeDataList;
+//    }
+//
+//    public void setFrautTradeDataList(List<TradeData> frautTradeDataList) {
+//        this.frautTradeDataList = frautTradeDataList;
+//    }
 }

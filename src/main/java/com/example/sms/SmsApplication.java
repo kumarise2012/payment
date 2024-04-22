@@ -5,14 +5,18 @@ import com.example.sms.jms.Trader;
 import com.example.sms.repository.TradeRepository;
 import com.example.sms.service.TraderService;
 import com.univocity.parsers.common.record.Record;
+import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.ResourceUtils;
@@ -24,6 +28,8 @@ import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
 
 @SpringBootApplication
 @EnableScheduling
@@ -49,31 +55,67 @@ public class SmsApplication {
 	private RestTemplate restTemplate;
 
 	//Read file on every 2 mins
-	@Scheduled(cron = "0/10 * * ? * *")
+	@Scheduled(cron = "0/30 * * ? * *")
 	public void runEveryTwoMinutes() throws Exception {
 		System.out.println("---File "+ System.currentTimeMillis());
 
 		uploadFileData();
+
+		runFraudTrader();
 	}
 
 	//RUn below job to all time which will take last 10 minstrsn
-	@Scheduled(cron = "0/15 * * ? * *")
+	//@Scheduled(cron = "0 0/1 * ? * *")
 	public void runFraudTrader(){
-		System.out.println("-----------------File 1"+ System.currentTimeMillis());
-		TradeData td= traderService.getAllTradeDataInLastTenMinutes();
+		System.out.println("-----------------File 1---"+ System.currentTimeMillis());
 
-		System.out.print("==========getUnique_Trader_id()============"+td.getUnique_Trader_id()+"==========getUnique_Trader_id()=======");
+		List<String> tradeDataListOfLastTenMinutes = traderService.getLastTemMinRecords();
 
+		List<TradeData> traderList2 = new ArrayList<>();
+
+
+		for (String t : tradeDataListOfLastTenMinutes){
+			System.out.println("-----------------Inside for Loop---");
+			traderService.UpdateFraudTraderFlag(t);
+			TradeData t1  = traderService.getFraudTradersDetails(t);
+			System.out.println("==========get Fraud trader details ============"+ t1.getUnique_Trader_id() +  t1.getFraudFlag());
+			traderList2.add(t1);
+		}
+
+
+
+
+//		List<TradeData> td= traderService.getAllTradeDataInLastTenMinutes();
+		List<Trader> traderList = new ArrayList<>();
 		final String uri = "http://localhost:9091/regulatoryAuthorities/country/japan";
 
-		Trader trader = new Trader();
-		trader.setTraderId(td.getUnique_Trader_id());
-		trader.setStockId("TATA");
-		trader.setBuyOrSell("BUY");
+		for(TradeData t : traderList2){
 
-		restTemplate.postForObject(uri,trader,Trader.class);
+			Trader trader = new Trader();
+			trader.setTraderId(t.getUnique_Trader_id());
+			trader.setStockId(t.getUnique_Stock_ID());
+			trader.setBuyOrSell(t.getBuy_or_Sell());
 
-		System.out.print("========================Trader Data has been written on ACTIVE mQ======================");
+
+			//restTemplate.postForObject(uri,trader, Trader.class);
+
+
+
+
+			traderList.add(trader);
+		}
+
+
+		restTemplate.postForObject(uri,traderList,ResponseEntity.class);
+
+
+
+
+		System.out.println("==========getUnique_Trader_id()============");
+
+
+
+		System.out.println("========================Trader Data has been written on ACTIVE mQ======================");
 
 
 
@@ -81,27 +123,18 @@ public class SmsApplication {
 
 
 	public String uploadFileData() throws Exception{
-
-
-		File file = ResourceUtils.getFile("classpath:config/TradersData.csv");
-
-
+		File file = ResourceUtils.getFile("classpath:TradersData.csv");
 		//Resource resource = resourceLoader.getResource("classpath:android.png");
 		//InputStream input = resource.getInputStream();
-
 		//File file = resource.getFile();
-
 		System.out.println("=================================="+file.getAbsoluteFile());
-
-
 		List<TradeData> tradeDataList = new ArrayList<>();
 		//InputStream inputStream = file.getInputStream();
 		CsvParserSettings csvParserSettings = new CsvParserSettings();
+		csvParserSettings.setHeaderExtractionEnabled(true);
 		csvParserSettings.setDelimiterDetectionEnabled(true,';');
-
 		CsvParser csvParser = new CsvParser(csvParserSettings);
 		List<Record> parseAllRecords = csvParser.parseAllRecords(file);
-
 		parseAllRecords.forEach( record -> {
 			TradeData tradeData = new TradeData();
 			tradeData.setFirst_name(record.getString("First_name"));
@@ -110,18 +143,23 @@ public class SmsApplication {
 			tradeData.setCountry_of_Residence(record.getString("Country_of_Residence"));
 			tradeData.setDate_of_birth(record.getString("date_of_birth"));
 			tradeData.setUnique_Trader_id(record.getString("Unique_Trader_id"));
-			//tradeData.setAmount(record.getDouble("Amount"));
+			tradeData.setAmount(record.getString("Amount"));
 			tradeData.setCurrency(record.getString("currency"));
 			tradeData.setUnique_Stock_ID(record.getString("unique_Stock_ID"));
+			tradeData.setBuy_or_Sell(record.getString("Buy_or_Sell"));
 			tradeData.setBuy_or_Sell(record.getString("Buy_or_Sell"));
 			tradeData.setTradeTime(ZonedDateTime.now());
 			tradeDataList.add(tradeData);
 		});
 		tradeRepository.saveAll(tradeDataList);
+		//file.delete();
 		return "File Uploaded";
-
-
-
 	}
+
+
+
+
+
+	//File Polar example
 
 }

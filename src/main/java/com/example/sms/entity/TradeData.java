@@ -48,7 +48,7 @@ public class TradeData
 
 
     @Column
-    private Double Amount;
+    private String Amount;
 
     @Column
     private String currency;
@@ -59,15 +59,26 @@ public class TradeData
     @Column
     private String Buy_or_Sell;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     @Column
     private ZonedDateTime tradeTime;
+
+    @Column
+    private String fraudFlag;
 
 //    @PrePersist
 //    private void onCreate() {
 //        tradeTime = new ZonedDateTime().no;
 //    }
 
+
+    public String getFraudFlag() {
+        return fraudFlag;
+    }
+
+    public void setFraudFlag(String fraudFlag) {
+        this.fraudFlag = fraudFlag;
+    }
 
     public ZonedDateTime getTradeTime() {
         return tradeTime;
@@ -133,11 +144,11 @@ public class TradeData
         this.unique_Trader_id = unique_Trader_id;
     }
 
-    public Double getAmount() {
+    public String getAmount() {
         return Amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(String amount) {
         Amount = amount;
     }
 

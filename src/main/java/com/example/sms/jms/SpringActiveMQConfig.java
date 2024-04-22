@@ -19,7 +19,7 @@ public class SpringActiveMQConfig {
 
     @Bean
     public Queue queue() {
-        return new ActiveMQQueue("javatute-queue");
+        return new ActiveMQQueue("fraud-trade-detection");
     }
 
     @Bean
