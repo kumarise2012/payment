@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+
+/**
+ * @author Santosh Kumar
+ * @Created 20-04-2024
+ */
 @Configuration
 public class AppConfig {
 

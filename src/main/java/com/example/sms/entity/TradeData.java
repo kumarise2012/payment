@@ -9,19 +9,18 @@ import lombok.NoArgsConstructor;
 
 
 import java.time.ZonedDateTime;
-
+/**
+ * @author Santosh Kumar
+ * @Created 20-04-2024
+ */
 @Data
 @Entity
-//defining class name as Table name
 @Builder
 @Table(name="TradeData")
 @JsonPropertyOrder()
 @NoArgsConstructor
 @AllArgsConstructor
-public class TradeData
-{
-
-    //defining name as column name
+public class TradeData{
 
     @Id
     @Column
@@ -44,8 +43,6 @@ public class TradeData
 
     @Column
     private String date_of_birth;
-
-
 
     @Column
     private String Amount;
@@ -70,7 +67,6 @@ public class TradeData
 //    private void onCreate() {
 //        tradeTime = new ZonedDateTime().no;
 //    }
-
 
     public String getFraudFlag() {
         return fraudFlag;
@@ -175,7 +171,6 @@ public class TradeData
     public void setBuy_or_Sell(String buy_or_Sell) {
         Buy_or_Sell = buy_or_Sell;
     }
-
 
     @Override
     public String toString() {

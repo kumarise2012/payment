@@ -4,6 +4,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalTime;
 
+/**
+ * @author Santosh Kumar
+ * @Created 20-04-2024
+ */
 public class readTradeFile {
 
     @Scheduled(cron = "0/10 * * ? * *")
@@ -14,6 +18,6 @@ public class readTradeFile {
 
     @Scheduled(fixedDelay = 10000)
     public void run() {
-        System.out.println("Current time is :: " + LocalTime.now());
+        System.out.println("==============FixedDelay Task=============" + LocalTime.now());
     }
 }

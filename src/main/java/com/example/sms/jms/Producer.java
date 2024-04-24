@@ -1,76 +1,45 @@
 package com.example.sms.jms;
 
-
+import com.example.sms.exceptions.ActiveMqException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import jakarta.jms.Queue;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
+/**
+ * @author Santosh Kumar
+ * @Created 20-04-2024
+ */
 
-@RestController
-@RequestMapping("/produce")
+@Slf4j
+@Component
 public class Producer {
-
     @Autowired
     private JmsTemplate jmsTemplate;
 
     @Autowired
     private Queue queue;
 
-    @PostMapping("/message")
-    public Trader sendMessage(@RequestBody Trader trader) {
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String studentAsJson = mapper.writeValueAsString(trader);
-
-            jmsTemplate.convertAndSend(queue, studentAsJson);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return trader;
-    }
-
     public List<Trader> sendMQMessage(@RequestBody List<Trader> trader) {
-
         try {
-            ObjectMapper mapper = new ObjectMapper();
-
-
-
-            Gson gson = new Gson();
-            // convert your list to json
-            String jsonCartList = gson.toJson(trader);
-
-//            JSONParser parser = new JSONParser(jsonCartList);
-//            JSONObject json = (JSONObject) parser.parse();
-//
-//            System.out.println("Stting to json ==================="+ json);
-
-
-            System.out.println("Setting to json ==================="+ jsonCartList.toString());
-
-            String myObjects = mapper.writeValueAsString(jsonCartList);
-
-            jmsTemplate.convertAndSend(queue, myObjects);
-
-
-            System.out.println("===========Inside Sent method of Active MQ=============");
-
-
-
-
-//            String studentAsJson = mapper.writeValueAsString(trader);
-//            jmsTemplate.convertAndSend(queue, studentAsJson);
-        } catch (Exception e) {
+            log.info("Producer :sendMQMessage - Producing Message on Active MQ Started ");
+            for(Trader t : trader) {
+                ObjectMapper mapper = new ObjectMapper();
+                String studentAsJson = mapper.writeValueAsString(t);
+                jmsTemplate.convertAndSend(queue, studentAsJson);
+            }
+            log.info("Producer :sendMQMessage - Producing Message on Active MQ Completed ");
+        } catch (ActiveMqException mqException ) {
+            log.error("=======Exception Occurred While Publishing Messaging on Active MQ============");
+        } catch ( Exception e){
             e.printStackTrace();
         }
         return trader;
