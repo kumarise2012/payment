@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @ComponentScan(basePackages = "com.example.sms*")
 public class SmsApplication {
+
 	public static void main(String[] args) {
 		SpringApplication.run(SmsApplication.class, args);
 	}

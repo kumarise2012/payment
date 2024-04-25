@@ -81,14 +81,10 @@ public class FileProcessJob {
         }
     }
 
-    public String uploadFileData() throws Exception{
+     public String uploadFileData() throws Exception{
         try {
             log.info("FileProcessJob : runEveryTwoMinutes() : uploadFileData - Uploading file data have started");
             File file = ResourceUtils.getFile("classpath:TradersData.csv");
-            //Resource resource = resourceLoader.getResource("classpath:android.png");
-            //InputStream input = resource.getInputStream();
-            //File file = resource.getFile();
-            //InputStream inputStream = file.getInputStream();
             CsvParserSettings csvParserSettings = new CsvParserSettings();
             csvParserSettings.setHeaderExtractionEnabled(true);
             csvParserSettings.setDelimiterDetectionEnabled(true, ';');
