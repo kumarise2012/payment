@@ -22,7 +22,7 @@ public class StockManipulationDaoImpl implements StockManipulationDao {
     private final TradeRepository tradeRepository;
 
     @Override
-    public List<String> getTenMinData() {
+    public List<String> getTenMinData(int minutes) {
         log.info("TraderService - GetLastTenMinutesRecords - Fetching Records for last 10 minutes");
         List<String> tradeDataList = null;
         try {

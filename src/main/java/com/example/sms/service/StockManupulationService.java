@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public interface StockManupulationService {
 
-    List<String> getLastTemMinRecords();
+    List<String> getLastTemMinRecords(int minutes);
 
     TradeData getFraudTradersDetails(String uniqueTradeId);
 

@@ -15,6 +15,8 @@ public final class SMSConstants {
 
     public static final String REGULATORY_AUTHORITIES_API = "http://localhost:9091/regulatoryAuthorities/country/japan";
 
+    public static final int TIME_TO_FETCH_RECORD = 10;
+
 
 
 }

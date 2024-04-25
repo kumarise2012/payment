@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 public class StockManipulationServiceImpl implements StockManupulationService {
     private final StockManipulationDao stockManipulationDao;
 
-    public List<String> getLastTemMinRecords() {
-        return stockManipulationDao.getTenMinData();
+    public List<String> getLastTemMinRecords(int minute) {
+        return stockManipulationDao.getTenMinData(minute);
     }
 
     public TradeData getFraudTradersDetails(String uniqueTradeId) {

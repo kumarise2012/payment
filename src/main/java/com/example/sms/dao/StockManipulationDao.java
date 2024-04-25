@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public interface StockManipulationDao {
-    List<String> getTenMinData();
+    List<String> getTenMinData(int  minutes);
     TradeData getSingleRecord(String uniqueTraderId);
     void updateFraudTrader(String uniqueTraderId);
 

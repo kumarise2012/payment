@@ -25,7 +25,7 @@ public class ConsumerController {
 
     @GetMapping("/message")
     public ResponseEntity<Trader> getMqMessage(){
-        log.info("ConsumerController :: getMqMessage() - Reading Message from ActiveMq");
+        log.info("ConsumerController :: getMqMess age() - Reading Message from ActiveMq");
         Trader mqData =  consumer.consumeMessage();
         return new ResponseEntity<>(mqData,HttpStatus.OK);
     }

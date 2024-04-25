@@ -107,13 +107,15 @@ public class FileProcessJob {
     public void runFraudTrader(){
         try {
             log.info("FileProcessJob : runEveryTwoMinutes() - runFraudTrader() checking for fraud Trader details in last 10 minutes - started");
-            List<String> tradeDataListOfLastTenMinutes = stockManipulationServiceImpl.getLastTemMinRecords();
+            List<String> lastTenMinutesTradeData = stockManipulationServiceImpl.getLastTemMinRecords(SMSConstants.TIME_TO_FETCH_RECORD);
             List<Trader> traderList2 = new ArrayList<>();
-            for (String t : tradeDataListOfLastTenMinutes) {
+            for (String t : lastTenMinutesTradeData) {
                 String[] fraudTraderDetails = t.split(",");
                 stockManipulationServiceImpl.UpdateFraudTraderFlag(fraudTraderDetails[0]);
+                log.info("-----Identified Issue with Trade , Details are ---------------"+ fraudTraderDetails[0]);
                 Trader traderDataMapper = traderDataMapper(fraudTraderDetails);
-                TradeData t1 = stockManipulationServiceImpl.getFraudTradersDetails(t);
+                TradeData illegalTraderDetails = stockManipulationServiceImpl.getFraudTradersDetails(fraudTraderDetails[0]);
+                log.info("-----Identified Issue with Trade , Details are ---------------"+ illegalTraderDetails.toString());
                 traderList2.add(traderDataMapper);
             }
             //regulatoryAuthorities(SMSConstants.REGULATORY_AUTHORITIES_API, traderList2);
@@ -169,8 +171,6 @@ public class FileProcessJob {
            traderDetails.setCountryOfResidence(traderData[5]);
            traderDetails.setDate_of_birth(traderData[6]);
            traderDetails.setFraudDetectionTime(new Time(System.currentTimeMillis()).toString());
-
-           log.info("FileProcessJob : runEveryTwoMinutes()============"+ traderDetails.getTraderId() + traderDetails.getFirstName());
        }
         return traderDetails;
     }

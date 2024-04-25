@@ -59,7 +59,7 @@ public class StockManipulationDaoImplTest {
     @Test
     public void getTenMinDataTest(){
         Mockito.doReturn(getTradeDataList()).when(tradeRepository).getTemMinutesRecord(10);
-        subjectUnderTest.getTenMinData();
+        subjectUnderTest.getTenMinData(10);
 
     }
 

@@ -22,15 +22,13 @@ public interface TradeRepository extends CrudRepository<TradeData, Integer> {
     @Query(value = "UPDATE TRADE_DATA td set td.Fraud_Flag='YES' where td.UNIQUE_TRADER_ID =:unique_Trader_id", nativeQuery = true)
     void updateTraderAsFraud(@Param("unique_Trader_id") String UNIQUE_TRADER_ID);
 
-    @Query(value = "SELECT * from TRADE_DATA where UNIQUE_TRADER_ID ='ZE001' limit 1", nativeQuery = true)
-    TradeData getFraudTradersDetails(String UNIQUE_TRADER_ID);
+    @Query(value = "SELECT * from TRADE_DATA td where td.UNIQUE_TRADER_ID =:unique_Trader_id limit 1", nativeQuery = true)
+    TradeData getFraudTradersDetails(@Param("unique_Trader_id") String UNIQUE_TRADER_ID);
 
-    //Final Query
     @Query(value = "Select distinct UNIQUE_TRADER_ID , UNIQUE_STOCK_ID , First_name , Last_Name ,Nationality , Country_of_Residence ,date_of_birth from TRADE_DATA  u\n" +
             "where TRADE_TIME >  CURRENT_TIMESTAMP - INTERVAL '10' MINUTE\n" +
             "GROUP BY UNIQUE_STOCK_ID, UNIQUE_TRADER_ID\n" +
             "Having count(BUY_OR_SELL) > 5 ", nativeQuery = true)
     List<String> getTemMinutesRecord(int timeInMinutes);
-
 
 }
