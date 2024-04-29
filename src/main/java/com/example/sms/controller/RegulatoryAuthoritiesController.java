@@ -26,7 +26,7 @@ public class RegulatoryAuthoritiesController {
     private void regulatoryAuthoritiesJapan(@RequestBody List<Trader> trader) {
         try {
             producer.sendMQMessage(trader);
-            log.info("Regulatory Authorities of India  has been informed");
+            log.info("Regulatory Authorities of Japan  has been informed");
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
@@ -36,7 +36,7 @@ public class RegulatoryAuthoritiesController {
     private void regulatoryAuthoritiesIndia(@RequestBody List<Trader> trader) {
         try {
             producer.sendMQMessage(trader);
-            log.info("Regulatory Authorities of Japan  has been informed");
+            log.info("Regulatory Authorities of India  has been informed");
         } catch (Exception exception){
             log.error(exception.getMessage());
         }
