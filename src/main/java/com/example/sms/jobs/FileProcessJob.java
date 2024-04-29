@@ -56,9 +56,6 @@ public class FileProcessJob {
     @Autowired
     ResourceLoader resourceLoader;
 
-//    @Value("${regulatory.authorities.uri}")
-//    private String regulatoryAuthoritiesUri;
-
     @Autowired
     private RestTemplate restTemplate;
 
