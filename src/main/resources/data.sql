@@ -1,0 +1,1 @@
+INSERT INTO Trade_Data VALUES (2,'Jyoti', 'kumar', 'IN','IN','30/11/1990','1102','10000','INR','ITC0001','BUY','2024-04-20 18:30:20','');
